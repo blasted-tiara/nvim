@@ -79,8 +79,8 @@ return {
                     { name = "buffer" },
                     { name = "path" },
                 }, {
-                        { name = "buffer" },
-                    }),
+                    { name = "buffer" },
+                }),
                 formatting = {
                     format = function(_, item)
                         if kind_icons[item.kind] then
@@ -120,7 +120,7 @@ return {
             local t = ls.text_node
             local i = ls.insert_node
             local rep = require("luasnip.extras").rep
-            
+
             -- Snippet for logging a js/ts variable
             local function create_var_log_js_snippet()
                 return s("varlog", {

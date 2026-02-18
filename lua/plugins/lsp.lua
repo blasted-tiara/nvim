@@ -1,6 +1,7 @@
 return {
     {
         "mason-org/mason.nvim",
+        priority = 20,
         opts = {}
     },
     {
