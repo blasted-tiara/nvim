@@ -21,6 +21,12 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+-- Treat .har files as json
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+  pattern = "*.har",
+  command = "setfiletype json",
+})
+
 -- Setup lazy.nvim
 require("lazy").setup({
   spec = {
