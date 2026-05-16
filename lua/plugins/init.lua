@@ -546,12 +546,6 @@ return {
         end
     },
     {
-        'numToStr/Comment.nvim',
-        opts = {
-            -- add any options here
-        }
-    },
-    {
         'tpope/vim-sleuth',
         event = 'VeryLazy'
     },
