@@ -7,6 +7,50 @@ return {
     {
         "neovim/nvim-lspconfig",
         config = function()
+            local rust_targets = {
+                { label = "all/default", target = vim.NIL },
+                { label = "wasm32-unknown-unknown", target = "wasm32-unknown-unknown" },
+            }
+            local rust_target_index = 1
+
+            local function rust_analyzer_settings()
+                local cargo = {
+                    allTargets = true,
+                    features = "all",
+                    cfgs = { 'feature="benchmarking"' },
+                    target = rust_targets[rust_target_index].target,
+                }
+
+                return {
+                    ["rust-analyzer"] = {
+                        checkOnSave = {
+                            allTargets = true,
+                        },
+                        cargo = cargo,
+                    },
+                }
+            end
+
+            local function toggle_rust_target()
+                if rust_target_index == 1 then
+                    rust_target_index = 2
+                else
+                    rust_target_index = 1
+                end
+
+                local settings = rust_analyzer_settings()
+                vim.lsp.config("rust_analyzer", { settings = settings })
+
+                for _, client in ipairs(vim.lsp.get_clients({ name = "rust_analyzer" })) do
+                    client.settings = settings
+                    client.notify("workspace/didChangeConfiguration", { settings = client.settings })
+                end
+
+                vim.notify("rust-analyzer target: " .. rust_targets[rust_target_index].label, vim.log.levels.INFO)
+            end
+
+            vim.keymap.set('n', '<leader>rt', toggle_rust_target, { noremap = true, silent = true, desc = 'Toggle rust-analyzer target' })
+
             -- LSP on_attach function for document highlighting
             -- LSP keybindings setup via LspAttach autocmd
             vim.api.nvim_create_autocmd('LspAttach', {
@@ -107,18 +151,7 @@ return {
             vim.lsp.enable('lua_ls')
 
             vim.lsp.config("rust_analyzer", {
-                settings = {
-                    ["rust-analyzer"] = {
-                        checkOnSave = {
-                            allTargets = true,
-                        },
-                        cargo = {
-                            allTargets = true,
-                            -- target = "all",
-                            target = "wasm32-unknown-unknown",
-                        },
-                    },
-                },
+                settings = rust_analyzer_settings(),
             })
             vim.lsp.enable('rust_analyzer')
         end,
