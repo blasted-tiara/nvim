@@ -27,6 +27,11 @@ return {
                             allTargets = true,
                         },
                         cargo = cargo,
+                        diagnostics = {
+                            disabled = {
+                                "inactive-code"
+                            }
+                        }
                     },
                 }
             end
