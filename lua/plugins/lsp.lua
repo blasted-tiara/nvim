@@ -7,6 +7,11 @@ return {
     {
         "neovim/nvim-lspconfig",
         config = function()
+            -- Advertise nvim-cmp capabilities to all LSP servers
+            vim.lsp.config('*', {
+                capabilities = require('cmp_nvim_lsp').default_capabilities(),
+            })
+
             local rust_targets = {
                 { label = "all/default", target = vim.NIL },
                 { label = "wasm32-unknown-unknown", target = "wasm32-unknown-unknown" },
@@ -159,6 +164,15 @@ return {
                 settings = rust_analyzer_settings(),
             })
             vim.lsp.enable('rust_analyzer')
+
+            vim.lsp.config("wgsl_analyzer", {
+                cmd = { vim.fn.stdpath("data") .. "/mason/bin/wgsl-analyzer" },
+                filetypes = { "wgsl" },
+                root_dir = function(bufnr, on_dir)
+                    on_dir(vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
+                end,
+            })
+            vim.lsp.enable('wgsl_analyzer')
         end,
     },
 }
